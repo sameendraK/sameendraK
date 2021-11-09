@@ -1,0 +1,402 @@
+A lambda function can’t contain the return statement. In a lambda function, statements like return, pass, assert, or raise will raise a SyntaxError exception. For example:
+
+
+"""
+Higher-order functions like map(), filter(), and functools.reduce() can be converted to more elegant forms with slight twists of creativity, in particular with list comprehensions or generator expressions.
+
+The built-in function map() takes a function as a first argument and applies it to each of the elements of its second argument, an iterable.
+
+The built-in function filter() can be converted into a list comprehension. It takes a predicate as a first argument and an iterable as a second argument. It builds an iterator containing all the elements of the initial collection that satisfies the predicate function.
+
+Similar to map() and reduce() each element of the iterable, reduce() applies the function and accumulates the result that is returned when the iterable is exhausted.
+"""
+
+
+
+"""
+A Python lambda expression consists of:
+
+The Keyword: lambda
+A bound variable: x
+A body: (x + 3) * 5 / 2
+Regarding the second bracket of 3, ((lambda x: (x + 3) * 5 / 2)(3)):
+
+Reduction is a lambda calculus strategy to compute the value of the expression. It consists of substituting the argument 3 for x.
+
+Overall, the run of this lambda function happens with 3 being passed into it as an argument. You can calculate it in the following way:
+
+x + 3 → 3 + 3 = 6
+5 / 2 = 2.5
+6 * 2.5 = 15.0
+"""
+
+
+
+"""
+from functools import reduce
+numbers = [1, 2, 3]
+reduce(lambda x, y: x + y, numbers)
+
+
+reduce() applies the function cumulatively to the items of the given sequence. Hence, it becomes 1 + 2 = 3 and then 3 + 3 = 6.
+"""
+
+
+
+
+"""
+If a is	a or b is	a and b is
+truthy	a	b
+falsy	b	a
+"""
+
+
+
+"""
+A while loop implements indefinite iteration, where the number of times the loop will be executed is not specified explicitly in advance. (Indeterminate would probably be an apt description of this type of iteration as well, but not the term that is typically used.)
+
+Definite iteration is implemented with the for loop in Python (which is covered in the next tutorial in the series).
+
+Discriminant isn’t even an adjective, much less a description of any type of iteration.
+
+All right, that was easy. We’re just getting warmed up …
+"""
+
+
+
+
+"""
+s = ""
+
+n = 5
+while n > 0:
+    n -= 1
+    if (n % 2) == 0:
+        continue
+
+    a = ['foo', 'bar', 'baz']
+    while a:
+        s += str(n) + a.pop(0)
+        if len(a) < 2:
+            break
+4foo
+Incorrect
+This is what we expected to see:
+"3foo3bar1foo1bar"
+
+The continue on line 7 applies to the outer while loop; the break on line 13 applies to the inner while loop.
+
+n is decremented straight away at the top of the outer loop, so during the body of the loop it effectively has successive values 4, 3, 2, 1, and 0. The continue is executed on the even values, so the inner while loop only occurs when n is 3 and 1.
+
+Inside the inner while loop, a.pop(0) removes the first item of a. Once this has occurred twice, yielding 'foo' and 'bar', a has fewer than two items, and the break terminates the inner loop.
+
+Thus, the values concatenated onto s are, in turn, 3foo, 3bar, 1foo, and 1bar.
+
+Review: Nested while Loops
+
+"""
+
+
+
+"""
+while a: a.pop()
+
+Although this works, it is unlikely you’d clear a list this way. Either of these is much more straightforward:
+
+a.clear()
+ 
+a = []
+Also, remember these points:
+
+Only a simple statement may occur on the same line as while.
+PEP 8 discourages it.
+"""
+
+
+
+"""
+Assume the following list definition:
+
+>>> a = ['foo', 'bar', 'baz', 'qux', 'quux', 'corge']
+Several short REPL sessions are shown below. Which display correct output?
+
+
+>>> a[:] is a
+True
+Incorrect
+
+>>> print(a[-5:-3])
+['bar', 'baz']
+Incorrect
+
+>>> max(a[2:4] + ['grault'])
+'qux'
+Incorrect
+
+>>> print(a[-6])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError: list index out of range
+
+>>> print(a[4::-2])
+['quux', 'baz', 'foo']
+Incorrect
+
+Here is a diagram to remind you of the list indices:
+
+Diagram of a Python list
+Correct Answers
+>>> print(a[4::-2])
+['quux', 'baz', 'foo']
+Slice syntax [4::-2] begins with the element at index 4 ('quux') and proceeds to the start of the list, skipping every other item. That yields the elements at indices 4, 2, and 0.
+>>> print(a[-5:-3])
+['bar', 'baz']
+[-5:-3] starts at index -5 and goes up to but not including index -3, which designates items 'bar' and 'baz'.
+>>> max(a[2:4] + ['grault'])
+'qux'
+a[2:4] returns the slice ['baz', 'qux']. The + operator concatenates, so the argument to max() is ['baz', 'qux', 'grault']. The maximum value (for strings, the latest in alphabetical order) is 'qux'.
+Incorrect Answers
+>>> print(a[-6])
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError: list index out of range
+As you can see from the diagram, negative indices begin with -1, so -6 actually is a valid index, corresponding to the first item in the list ('foo'). This statement would not actually generate an error.
+Positive indices, on the other hand, start with 0, so 6 would not be a valid index for this list.
+>>> a[:] is a
+True
+Recall that for a string s, s[:] returns a reference to s. So s is s[:] is True. For a list, a[:] is a copy of a—they do not reference the same object.
+"""
+
+
+"""
+Consider the following nested list definition:
+
+x = [10, [3.141, 20, [30, 'baz', 2.718]], 'foo']
+A schematic for this list is shown below:
+
+Nest list example
+What is the expression that returns the 'z' in 'baz'?
+
+x.pop(2)
+Incorrect
+'foo' != 'z'
+
+This is what we expected to see:
+x[1][2][1][2]
+
+Each of the four indices in the answer can be specified as a positive or negative number:
+
+Expression	Selects
+x[1]
+x[-2]	The second element of x:
+[3.141, 20, [30, 'baz', 2.718]]
+x[1][2]
+x[1][-1]	The third element of that sublist:
+[30, 'baz', 2.718]
+x[1][2][1]
+x[1][2][-2]	The second element of that sublist: 'baz'
+x[1][2][1][2]
+x[1][2][1][-1]	The third character of 'baz': 'z'
+Review: Lists Can Be Nested
+"""
+
+
+"""
+Same nested list as the previous question:
+
+x = [10, [3.141, 20, [30, 'baz', 2.718]], 'foo']
+Nest list example
+What expression returns the list ['baz', 2.718]?
+
+x[1][2][1][2]
+Incorrect
+'z' != ['baz', 2.718]
+
+This is what we expected to see:
+x[1][2][1:]
+
+Expression	Selects
+x[1]	The second element of x:
+[3.141, 20, [30, 'baz', 2.718]]
+x[1][2]	The third element of that sublist:
+[30, 'baz', 2.718]
+x[1][2][1:3]
+or
+x[1][2][1:]	The slice ['baz', 2.718]
+Review: Lists Can Be Nested
+"""
+
+
+
+"""
+List a is defined as follows:
+
+a = [1, 2, 3, 4, 5]
+Select all of the following statements that remove the middle element 3 from a so that it equals [1, 2, 4, 5]:
+
+
+a.remove(3)
+Incorrect
+
+a[2:3] = []
+Incorrect
+
+a[2:2] = []
+
+a[2] = []
+
+del a[2]
+Correct
+
+Correct answers
+>>> del a[2]
+>>> a
+[1, 2, 4, 5]
+The del command simply removes the specified list item. This is arguably the most straightforward way to remove the middle item from a.
+>>> a[2:3] = []
+>>> a
+[1, 2, 4, 5]
+a[2:3] represents the slice of a consisting of the single element 3. The slice assignment a[2:3] = [] replaces that slice with an empty list, which effectively removes that element.
+>>> a.remove(3)
+>>> a
+[1, 2, 4, 5]
+The .remove() method removes the specified argument from the target list, if it is present. This is a nice way to remove an item from a list by specifying its value, rather than its index in the list.
+Incorrect answers
+>>> a[2:2] = []
+>>> a
+[1, 2, 3, 4, 5]
+a[2:2] is an empty slice. The slice assignment a[2:2] = [] does not replace anything in a. This statement leaves a unchanged.
+>>> a[2] = []
+>>> a
+[1, 2, [], 4, 5]
+a[2] designates a single item, not a slice. Thus, a[2] = [] replaces that item with an empty list.
+Review: Lists Are Mutable
+"""
+
+
+"""
+a = ['a', 'b', 'c']
+Which of the following statements adds 'd' and 'e' to the end of a, so that it then equals ['a', 'b', 'c', 'd', 'e']:
+
+
+a.append(['d', 'e'])
+Incorrect
+
+a += 'de'
+Incorrect
+
+a.extend(['d', 'e'])
+Incorrect
+
+a[len(a):] = ['d', 'e']
+Correct
+
+a += ['d', 'e']
+Incorrect
+
+a[-1:] = ['d', 'e']
+
+Correct Answers
+Each of the following statements appends 'd' and 'e' to a:
+
+>>> a += ['d', 'e']
+>>> a
+['a', 'b', 'c', 'd', 'e']
+The += augmented assignment operator expects an iterable as the second operand. It iterates over the second operand and adds the resulting items to the end of the target operand.
+>>> a += 'de'
+>>> a
+['a', 'b', 'c', 'd', 'e']
+Remember that when Python iterates over a string, the result is a list of the component characters. Thus, this statement also appends the list ['d', 'e'].
+>>> a.extend(['d', 'e'])
+>>> a
+['a', 'b', 'c', 'd', 'e']
+The .extend() method also expects an iterable as an argument, and adds the designated items to the target list.
+>>> a[len(a):] = ['d', 'e']
+>>> a
+['a', 'b', 'c', 'd', 'e']
+a[len(a):] designates an empty slice at the end of a. This assignment replaces that slice with ['d', 'e'].
+Incorrect Answers
+These statements do not append 'd' and 'e' to a:
+
+>>> a.append(['d', 'e'])
+>>> a
+['a', 'b', 'c', ['d', 'e']]
+The .append() method takes a single object as its argument, and adds that object intact to the end of the target list. So this statement actually adds the list ['d', 'e'] to the end of a.
+>>> a[-1:] = ['d', 'e']
+>>> a
+['a', 'b', 'd', 'e']
+a[-1:] designates the slice of a consisting of only the element 'c', so this statement replaces that slice with ['d', 'e']:
+Review: Lists Are Mutable
+"""
+
+
+
+"""
+You have a list a defined as follows:
+
+a = [1, 2, 7, 8]
+Write a Python statement using slice assignment that will fill in the missing values so that a equals [1, 2, 3, 4, 5, 6, 7, 8].
+
+wda
+Incorrect
+NameError: name 'wda' is not defined
+
+This is what we expected to see:
+a[2:2] = [3, 4, 5, 6]
+
+a[2:2] designates the empty slice of the original a between values 2 and 7. The assignment statement shown inserts the items in [3, 4, 5, 6] into that location.
+
+Review: Lists Are Mutable
+
+
+
+
+
+
+"""
+Consider this assignment statement:
+
+a, b, c = (1, 2, 3, 4, 5, 6, 7, 8, 9)[1::3]
+Following execution of this statement, what is the value of b:
+
+
+4
+
+Incorrect
+
+6
+
+
+2
+
+
+5
+
+Incorrect
+
+The slice expression on the right side of the assignment produces the tuple (2, 5, 8):
+
+>>> (1, 2, 3, 4, 5, 6, 7, 8, 9)[1::3]
+(2, 5, 8)
+The assignment is thus equivalent to this compound tuple packing/unpacking assignment:
+
+>>> a, b, c = (2, 5, 8)
+b is given the value 5.
+
+Review: Tuple Assignment, Packing, and Unpacking
+"""
+
+
+
+"""
+e slice expression on the right side of the assignment reverses the tuple:
+
+>>> (y, x)[::-1]
+(5, -5)
+The assignment is thus equivalent to this compound tuple packing/unpacking assignment:
+
+>>> x, y = (5, -5)
+x and y retain the values they had originally.
+
+Review: Tuple Assignment, Packing, and Unpacking
+"""
